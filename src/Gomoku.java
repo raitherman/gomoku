@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 
 public class Gomoku extends Application {
 	//muutuja seadmaks mänguvälja suurust
-	public static final int MÕÕTMED = 5;
+	public static final int MÕÕTMED = 16;
 
 	private Mängija punaneMängija = new Mängija(Color.RED, "Punane");
 	private Mängija sinineMängija = new Mängija(Color.BLUE, "Sinine");
