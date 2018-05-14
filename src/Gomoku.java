@@ -84,9 +84,7 @@ public class Gomoku extends Application {
 		if (result.get() == inimmäng){
 			mängutüüp = -1;
 		} else if (result.get() == arvutimäng) {
-			mängutüüp = 1;};
-		System.out.println(mängutüüp);
-
+			mängutüüp = 1;}
         algSeis();
     }
     public class Lahter extends Pane {
@@ -111,9 +109,11 @@ public class Gomoku extends Application {
         }
         //meetod mis loeb välja klikki
         private void teeKäik() {
+        	if (mängutüüp==-1){
         	if (!kasLahterKinni) {
         		kasLahterKinni = true;
 	        	aktiivneMängija.teeKäik(this, getChildren());
+				System.out.println();
 	        	//kontrollime kas aktiivne mängija on võitnud. Kui jah, siis vastav teade ja peale seda algseis.
 				if (aktiivneMängija.kasMängijaVõitnud(this.xkoord, this.ykoord)){
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -133,7 +133,31 @@ public class Gomoku extends Application {
 					aktiivneMängija = aktiivneMängija.equals(punaneMängija) ? sinineMängija : punaneMängija;
 					teavitus.setText(aktiivneMängija + " käib");
 				}
-        	}
+        	}}
+        	else{//arvuti vastu mäng
+				//mängija käib
+        		if (!kasLahterKinni) {
+				kasLahterKinni = true;
+				aktiivneMängija.teeKäik(this, getChildren());
+				//kontrollime kas aktiivne mängija on võitnud. Kui jah, siis vastav teade ja peale seda algseis.
+				if (aktiivneMängija.kasMängijaVõitnud(this.xkoord, this.ykoord)){
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Mäng läbi");
+					alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
+					alert.showAndWait();
+					aktiivneMängija.suurendaTulemus();
+					algSeis();
+				}
+				//siin käib arvuti
+
+				else if (kasVäliTäis()) {
+					Alert mängläbi = new Alert(AlertType.INFORMATION);
+					mängläbi.setTitle("Mäng läbi");
+					mängläbi.setContentText("Viik.\nJätkamiseks vajuta OK!");
+					mängläbi.showAndWait();
+					algSeis();
+				}}
+			}
         }
     }
     //meetod kontrollib kas Väli on täis. Kui leiab välja mis ei ole täidetud, siis false
