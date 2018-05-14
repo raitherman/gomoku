@@ -27,7 +27,7 @@ import javax.swing.*;
 
 public class Gomoku extends Application {
 	//muutuja seadmaks mänguvälja suurust
-	public static final int MÕÕTMED = 16;
+	public static final int MÕÕTMED = 18;
 	int mängutüüp;
 	//-1 kui inimesed omavahel, 1 kui arvuti ka mängib.
 	private Mängija punaneMängija = new Mängija(Color.RED, "Punane");
