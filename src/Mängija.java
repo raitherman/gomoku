@@ -146,28 +146,31 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 1 < Gomoku.MÕÕTMED && j + 1 < Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && väljak[i][j] == väljak[i + 1][j + 1]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j + 1);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
+                        if(i-1>0 && j-1>0){
+                        Koordinaadid uus = new Koordinaadid(i-1, j-1);
+                            koordinaadid.add(uus);}
+                        if(i+2<Gomoku.MÕÕTMED && j+2<Gomoku.MÕÕTMED){
+                            Koordinaadid uus1 = new Koordinaadid(i+1, j+1);
+                            koordinaadid.add(uus1);}
                     }
                 }
             }
         }
         return koordinaadid;
     }
+
     public List<Koordinaadid> onDiagonaal1_3(int[][] väljak) {
         List<Koordinaadid> koordinaadid = new ArrayList<>();
         for (int i = 0; i < Gomoku.MÕÕTMED; i++) {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 2 < Gomoku.MÕÕTMED && j + 2 < Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && 1 == väljak[i + 1][j + 1] && 1 == väljak[i + 2][j + 2]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j + 1);
-                        Koordinaadid uus2 = new Koordinaadid(i + 2, j + 2);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
+                        if(i-1>0 && j-1>0){
+                            Koordinaadid uus = new Koordinaadid(i-1, j-1);
+                            koordinaadid.add(uus);}
+                        if(i+3<Gomoku.MÕÕTMED && j+3<Gomoku.MÕÕTMED){
+                            Koordinaadid uus1 = new Koordinaadid(i+3, j+3);
+                            koordinaadid.add(uus1);}
                     }
                 }
             }
@@ -180,14 +183,12 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 3 < Gomoku.MÕÕTMED && j + 3 < Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && 1 == väljak[i + 1][j + 1] && 1 == väljak[i + 2][j + 2] && 1 == väljak[i + 3][j + 3]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j + 1);
-                        Koordinaadid uus2 = new Koordinaadid(i + 2, j + 2);
-                        Koordinaadid uus3 = new Koordinaadid(i + 3, j + 3);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
-                        koordinaadid.add(uus3);
+                        if(i-1>0 && j-1>0){
+                            Koordinaadid uus = new Koordinaadid(i-1, j-1);
+                            koordinaadid.add(uus);}
+                        if(i+4<Gomoku.MÕÕTMED && j+4<Gomoku.MÕÕTMED){
+                            Koordinaadid uus1 = new Koordinaadid(i+1, j+1);
+                            koordinaadid.add(uus1);}
                     }
                 }
             }
@@ -201,10 +202,12 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 1 < Gomoku.MÕÕTMED && j - 1 > 0) {
                     if (1 == väljak[i][j] && väljak[i][j] == väljak[i + 1][j - 1]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j - 1);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
+                        if(i-1>0 && j+1<Gomoku.MÕÕTMED){
+                            Koordinaadid uus = new Koordinaadid(i-1, j+1);
+                            koordinaadid.add(uus);}
+                        if(i+2<Gomoku.MÕÕTMED && j-2>0){
+                            Koordinaadid uus1 = new Koordinaadid(i+2, j-2);
+                            koordinaadid.add(uus1);}
                     }
                 }
             }
@@ -217,12 +220,12 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 2 < Gomoku.MÕÕTMED && j - 2 > 0) {
                     if (1 == väljak[i][j] && 1 == väljak[i + 1][j - 1] && 1 == väljak[i + 2][j - 2]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j - 1);
-                        Koordinaadid uus2 = new Koordinaadid(i + 2, j - 2);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
+                        if(i-1>0 && j+1<Gomoku.MÕÕTMED){
+                            Koordinaadid uus = new Koordinaadid(i-1, j+1);
+                            koordinaadid.add(uus);}
+                        if(i+3<Gomoku.MÕÕTMED && j-3>0){
+                            Koordinaadid uus1 = new Koordinaadid(i+3, j-3);
+                            koordinaadid.add(uus1);}
                     }
                 }
             }
@@ -235,14 +238,12 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 3 < Gomoku.MÕÕTMED && j - 3 > 0) {
                     if (1 == väljak[i][j] && 1 == väljak[i + 1][j - 1] && 1 == väljak[i + 2][j - 2] && 1 == väljak[i + 3][j - 3]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j - 1);
-                        Koordinaadid uus2 = new Koordinaadid(i + 2, j - 2);
-                        Koordinaadid uus3 = new Koordinaadid(i + 3, j - 3);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
-                        koordinaadid.add(uus3);
+                        if(i-1>0 && j+1<Gomoku.MÕÕTMED){
+                            Koordinaadid uus = new Koordinaadid(i-1, j+1);
+                            koordinaadid.add(uus);}
+                        if(i+4<Gomoku.MÕÕTMED && j-4>0){
+                            Koordinaadid uus1 = new Koordinaadid(i+4, j-4);
+                            koordinaadid.add(uus1);}
                     }
                 }
             }
@@ -255,10 +256,14 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 1 < Gomoku.MÕÕTMED && j < Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && väljak[i][j] == väljak[i + 1][j]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
+                        if(i-1>0){
+                        Koordinaadid uus = new Koordinaadid(i-1, j);
+                            koordinaadid.add(uus);}
+                            if(i+2<Gomoku.MÕÕTMED) {
+                                Koordinaadid uus1 = new Koordinaadid(i + 2, j);
+                                koordinaadid.add(uus1);
+                            }
+
                     }
                 }
             }
@@ -271,12 +276,13 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 2 < Gomoku.MÕÕTMED && j < Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && 1 == väljak[i + 1][j] && 1 == väljak[i + 2][j]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j);
-                        Koordinaadid uus2 = new Koordinaadid(i + 2, j);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
+                        if(i-1>0){
+                            Koordinaadid uus = new Koordinaadid(i-1, j);
+                            koordinaadid.add(uus);}
+                        if(i+3<Gomoku.MÕÕTMED) {
+                            Koordinaadid uus1 = new Koordinaadid(i + 3, j);
+                            koordinaadid.add(uus1);
+                        }
                     }
                 }
             }
@@ -289,14 +295,13 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 3 < Gomoku.MÕÕTMED && j < Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && 1 == väljak[i + 1][j] && 1 == väljak[i + 2][j] && 1 == väljak[i + 3][j]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i + 1, j);
-                        Koordinaadid uus2 = new Koordinaadid(i + 2, j);
-                        Koordinaadid uus3 = new Koordinaadid(i + 3, j);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
-                        koordinaadid.add(uus3);
+                        if(i-1>0){
+                            Koordinaadid uus = new Koordinaadid(i-1, j);
+                            koordinaadid.add(uus);}
+                        if(i+4<Gomoku.MÕÕTMED) {
+                            Koordinaadid uus1 = new Koordinaadid(i + 4, j);
+                            koordinaadid.add(uus1);
+                        }
                     }
                 }
             }
@@ -309,10 +314,13 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i< Gomoku.MÕÕTMED && j + 1<Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && väljak[i][j] == väljak[i][j+1]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i, j+1);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
+                        if(j-1>0){
+                            Koordinaadid uus = new Koordinaadid(i, j-1);
+                            koordinaadid.add(uus);}
+                        if(j+2<Gomoku.MÕÕTMED) {
+                            Koordinaadid uus1 = new Koordinaadid(i, j+2);
+                            koordinaadid.add(uus1);
+                        }
                     }
                 }
             }
@@ -325,12 +333,13 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i< Gomoku.MÕÕTMED && j + 2<Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && 1 == väljak[i][j+1] && 1 == väljak[i][j+2]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i, j+1);
-                        Koordinaadid uus2 = new Koordinaadid(i,j+2);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
+                        if(j-1>0){
+                            Koordinaadid uus = new Koordinaadid(i, j-1);
+                            koordinaadid.add(uus);}
+                        if(j+2<Gomoku.MÕÕTMED) {
+                            Koordinaadid uus1 = new Koordinaadid(i, j+3);
+                            koordinaadid.add(uus1);
+                        }
                     }
                 }
             }
@@ -343,14 +352,13 @@ public class Mängija {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i< Gomoku.MÕÕTMED && j + 3<Gomoku.MÕÕTMED) {
                     if (1 == väljak[i][j] && 1 == väljak[i][j+1] && 1 == väljak[i][j+2] && 1 == väljak[i][j+3]) {
-                        Koordinaadid uus = new Koordinaadid(i, j);
-                        Koordinaadid uus1 = new Koordinaadid(i, j+1);
-                        Koordinaadid uus2 = new Koordinaadid(i,j+2);
-                        Koordinaadid uus3 = new Koordinaadid(i,j+3);
-                        koordinaadid.add(uus);
-                        koordinaadid.add(uus1);
-                        koordinaadid.add(uus2);
-                        koordinaadid.add(uus3);
+                        if(j-1>0){
+                            Koordinaadid uus = new Koordinaadid(i, j-1);
+                            koordinaadid.add(uus);}
+                        if(j+4<Gomoku.MÕÕTMED) {
+                            Koordinaadid uus1 = new Koordinaadid(i, j+4);
+                            koordinaadid.add(uus1);
+                        }
                     }
                 }
             }

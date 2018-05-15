@@ -14,4 +14,12 @@ public class Koordinaadid {
     public int getY() {
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "Koordinaadid{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
