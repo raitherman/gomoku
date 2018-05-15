@@ -4,6 +4,7 @@
  * Jaan Kaasik
  * */
 
+import java.io.File;
 import java.util.*;
 
 import javafx.application.Application;
@@ -12,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -26,16 +30,19 @@ import javax.swing.*;
 
 public class Gomoku extends Application {
     //muutuja seadmaks mänguvälja suurust
-    public static final int MÕÕTMED = 18;
-    int mängutüüp;
+	public static final int MÕÕTMED = 18;
+	//private static final int INIMENE_VS_INIMENE = -1;
+	//private static final int ARVUTI_VS_INIMENE = 1;
+    //int mängutüüp;
     Map<Koordinaadid, Lahter> lahtrid;
     //-1 kui inimesed omavahel, 1 kui arvuti ka mängib.
     private Mängija punaneMängija = new Mängija(Color.RED, "Punane");
     private Mängija sinineMängija = new Mängija(Color.BLUE, "Sinine");
     private Mängija aktiivneMängija = punaneMängija;
     private Label teavitus = new Label();
-    BorderPane borderPane = new BorderPane();
-    java.util.List<Lahter> väljad = new ArrayList<>();
+    Map<Koordinaadid, Lahter> väljad = new HashMap();
+    //java.util.List<Lahter> väljad = new ArrayList<>();
+    HBox mänguAken = new HBox();
 
     public static void main(String[] args) {
         launch(args);
@@ -43,162 +50,116 @@ public class Gomoku extends Application {
 
     //mängu algseis. Loome uue mänguvälja ning eemaldame mängija käigud
     public void algSeis() {
+    	mänguAken.getChildren().clear();
         GridPane mänguväli = new GridPane();
-        Map<Koordinaadid, Lahter> lahtrid = new HashMap<>();
         for (int i = 0; i < MÕÕTMED; i++) {
             for (int j = 0; j < MÕÕTMED; j++) {
-                Lahter lahter = new Lahter(i, j);
+            	Koordinaadid koordinaadid = new Koordinaadid(i, j);
+                Lahter lahter = new Lahter(koordinaadid);
                 mänguväli.add(lahter, j, i);
                 //lisame kõik väljad ka listi, kust saame kontrollida kas väli on täis või mitte
-                väljad.add(lahter);
-                lahtrid.put(new Koordinaadid(i,j),lahter);
+                väljad.put(koordinaadid, lahter);
             }
         }
-        punaneMängija.algSeis();
-        sinineMängija.algSeis();
+        Alert mänguViis = new Alert(AlertType.CONFIRMATION);
+        mänguViis.setTitle("Valige endale sobiv mänguviis");
+        mänguViis.setHeaderText("Pane ennast proovile AI vastu");
+        mänguViis.setContentText("Ainult 1 mängu saab korraga mängida");
+        ButtonType inimmäng = new ButtonType("Inimene vs inimene");
+        ButtonType arvutimäng = new ButtonType("Mängin arvuti vastu");
+        mänguViis.getButtonTypes().setAll(arvutimäng, inimmäng);
+
+        Optional<ButtonType> result = mänguViis.showAndWait();
+
+        punaneMängija.algSeis(false);
+        sinineMängija.algSeis(result.get() == arvutimäng);
+
         aktiivneMängija = punaneMängija;
-        HBox päis = new HBox();
+        VBox külgRiba = new VBox();
+        külgRiba.setMinWidth(100);
         Button nuppUusMäng = new Button("Uus mäng");
         nuppUusMäng.setLayoutX(75);
         nuppUusMäng.setOnMouseClicked(e -> {
             algSeis();
         });
-        päis.getChildren().addAll(nuppUusMäng, teavitus);
-        borderPane.setTop(päis);
-        borderPane.setCenter(mänguväli);
         teavitus.setText("Punane alustab");
 
-        borderPane.setBottom(new Label(punaneMängija.getTulemus() + " " + sinineMängija.getTulemus()));
+        külgRiba.getChildren().addAll(
+        			nuppUusMäng,
+        			punaneMängija.getTulemusLabel(),
+        			sinineMängija.getTulemusLabel(),
+        			teavitus);
+        mänguAken.getChildren().addAll(mänguväli, külgRiba);
     }
-
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Gomoku");
-        stage.setScene(new Scene(borderPane, 500, 500));
-        stage.setResizable(false);
+        Scene stseen = new Scene(mänguAken, 500, 500);
+        stage.setScene(stseen);
         stage.show();
-        Alert kesmängib = new Alert(AlertType.CONFIRMATION);
-        kesmängib.setTitle("Valige endale sobiv mänguviis");
-        kesmängib.setHeaderText("Pane ennast proovile AI vastu");
-        kesmängib.setContentText("Ainult 1 mängu saab korraga mängida");
-        ButtonType inimmäng = new ButtonType("Inimene vs inimene");
-        ButtonType arvutimäng = new ButtonType("Mängin arvuti vastu");
-        kesmängib.getButtonTypes().setAll(arvutimäng, inimmäng);
-
-
-        Optional<ButtonType> result = kesmängib.showAndWait();
-        if (result.get() == inimmäng) {
-            mängutüüp = -1;
-        } else if (result.get() == arvutimäng) {
-            mängutüüp = 1;
-        }
         algSeis();
     }
-
     public class Lahter extends Pane {
-        private boolean kasLahterKinni;
-        private int xkoord;
-        private int ykoord;
-
-        public int getXKoord() {
-            return xkoord;
+        private Mängija omanik;
+        private Koordinaadid koordinaadid;
+        public Mängija getOmanik() {
+        	return omanik;
         }
-
-        public int getYKoord() {
-            return ykoord;
+        public void setOmanik(Mängija omanik) {
+        	this.omanik = omanik;
+    		File file = new File("src/resources/" + (omanik.equals(punaneMängija) ? "punane.png" : "sinine.png"));
+            Image image = new Image(file.toURI().toString(), this.getWidth(), this.getWidth(), true, true);
+            ImageView iv = new ImageView(image);
+        	this.getChildren().add(iv);
         }
-
-        private boolean getKasLahterKinni() {
-            return kasLahterKinni;
-        }
-
-        public Lahter(int xkoord, int ykoord) {
-            this.xkoord = xkoord;
-            this.ykoord = ykoord;
+        public Lahter(Koordinaadid koordinaadid) {
+            this.koordinaadid = koordinaadid;
             setStyle("-fx-border-color: black");
-            this.setPrefSize(200, 200);
+            this.setPrefSize(150, 150);
             this.setOnMouseClicked(e -> teeKäik());
         }
-        public Lahter(int xkoord, int ykoord, boolean kasLahterKinni) {
-            if (!kasLahterKinni) {
-                this.xkoord = xkoord;
-                this.ykoord = ykoord;
-                setStyle("-fx-border-color: black");
-                this.setPrefSize(200, 200);
-            }
-
-            this.setOnMouseClicked(e -> teeKäik());
-        }
-
-        public void setKasLahterKinni(boolean kasLahterKinni) {
-            this.kasLahterKinni = kasLahterKinni;
-        }
-
         //meetod mis loeb välja klikki
         private void teeKäik() {
-            if (mängutüüp == -1) {
-                if (!kasLahterKinni) {
-                    kasLahterKinni = true;
-                    aktiivneMängija.teeKäik(this, getChildren());
-                    System.out.println();
-                    //kontrollime kas aktiivne mängija on võitnud. Kui jah, siis vastav teade ja peale seda algseis.
-                    if (aktiivneMängija.kasMängijaVõitnud(this.xkoord, this.ykoord)) {
-                        Alert alert = new Alert(AlertType.INFORMATION);
-                        alert.setTitle("Mäng läbi");
-                        alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
-                        alert.showAndWait();
-                        aktiivneMängija.suurendaTulemus();
-                        algSeis();
-                    } else if (kasVäliTäis()) {
-                        Alert mängläbi = new Alert(AlertType.INFORMATION);
-                        mängläbi.setTitle("Mäng läbi");
-                        mängläbi.setContentText("Viik.\nJätkamiseks vajuta OK!");
-                        mängläbi.showAndWait();
-                        algSeis();
-                    } else {
-                        //kui aktiivne mängija ei võitnud, siis aktiivse mängija ära.
-                        aktiivneMängija = aktiivneMängija.equals(punaneMängija) ? sinineMängija : punaneMängija;
-                        teavitus.setText(aktiivneMängija + " käib");
-                    }
+            if (omanik == null) {
+                setOmanik(aktiivneMängija);
+                omanik.getKäigud()[this.koordinaadid.getY()][this.koordinaadid.getX()] = 1;
+                //kontrollime kas aktiivne mängija on võitnud. Kui jah, siis vastav teade ja peale seda algseis.
+                if (aktiivneMängija.kasMängijaVõitnud(this.koordinaadid.getX(), this.koordinaadid.getY())) {
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Mäng läbi");
+                    alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
+                    alert.showAndWait();
+                    aktiivneMängija.suurendaTulemus();
+                    algSeis();
+                } else if (kasVäliTäis()) {
+                    Alert mängläbi = new Alert(AlertType.INFORMATION);
+                    mängläbi.setTitle("Mäng läbi");
+                    mängläbi.setContentText("Viik.\nJätkamiseks vajuta OK!");
+                    mängläbi.showAndWait();
+                    algSeis();
+                } else {
+                    //kui aktiivne mängija ei võitnud, siis aktiivse mängija ära.
+                    aktiivneMängija = aktiivneMängija.equals(punaneMängija) ? sinineMängija : punaneMängija;
+                    teavitus.setText(aktiivneMängija + " käib");
                 }
-            } else {//arvuti vastu mäng
-                //mängija käib
-                if (!kasLahterKinni) {
-                    kasLahterKinni = true;
-                    aktiivneMängija.teeKäik(this, getChildren());
-                    //kontrollime kas aktiivne mängija on võitnud. Kui jah, siis vastav teade ja peale seda algseis.
-                    if (aktiivneMängija.kasMängijaVõitnud(this.xkoord, this.ykoord)) {
-                        Alert alert = new Alert(AlertType.INFORMATION);
-                        alert.setTitle("Mäng läbi");
-                        alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
-                        alert.showAndWait();
-                        aktiivneMängija.suurendaTulemus();
-                        algSeis();
-                    } else if (kasVäliTäis()) {
-                        Alert mängläbi = new Alert(AlertType.INFORMATION);
-                        mängläbi.setTitle("Mäng läbi");
-                        mängläbi.setContentText("Viik.\nJätkamiseks vajuta OK!");
-                        mängläbi.showAndWait();
-                        algSeis();
+              //siin käib arvuti
+                if (aktiivneMängija.isKasArvuti()) {
+                	/*List<Koordinaadid> punasekoordinaadid = punaneMängija.onHorisontaalselt_4(punaneMängija.getKäigud());
+                	System.out.println(punasekoordinaadid.size());*/
+                    List<Koordinaadid> sinisekoordinaadid = aktiivneMängija.onHorisontaalselt_4();
+                    if (sinisekoordinaadid.size() != 0){
+                    	System.out.println(sinisekoordinaadid.get(0));
+                    	System.out.println(väljad);
+                    	väljad.get(sinisekoordinaadid.get(0)).teeKäik();
                     }
-                }
-                //siin käib arvuti
-                List<Koordinaadid> punasekoordinaadid = punaneMängija.onHorisontaalselt_4(punaneMängija.getKäigud());
-                List<Koordinaadid> sinisekoordinaadid = sinineMängija.onHorisontaalselt_4(sinineMängija.getKäigud());
-                if (punasekoordinaadid.size()!= 0){
-                    System.out.println(punasekoordinaadid.get(0).toString());
-                    lahtrid.get(punasekoordinaadid.get(0)).setKasLahterKinni(true);
-                    sinineMängija.teeKäik(lahtrid.get(punasekoordinaadid.get(0)), lahtrid.get(punasekoordinaadid.get(0)).getChildren());
-
                 }
             }
         }
     }
-
     //meetod kontrollib kas Väli on täis. Kui leiab välja mis ei ole täidetud, siis false
     private boolean kasVäliTäis() {
-        for (Lahter väli : väljad) {
-            if (!väli.getKasLahterKinni()) {
+        for (Lahter väli : väljad.values()) {
+            if (väli.getOmanik() == null) {
                 return false;
             }
         }

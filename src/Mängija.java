@@ -6,19 +6,24 @@
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Mängija {
     //igal mängijal on massiiv väljadest.
-    private int[][] käigud = new int[Gomoku.MÕÕTMED][Gomoku.MÕÕTMED];
-    private Color värv;
-    private int tulemus = 0;
+	private int[][] käigud = new int[Gomoku.MÕÕTMED][Gomoku.MÕÕTMED];
+	private Color värv;
+	private int tulemus = 0;
     private String nimetus;
+    private boolean kasArvuti = false;
 
     public Mängija(Color värv, String nimetus) {
         this.värv = värv;
@@ -29,29 +34,23 @@ public class Mängija {
     public int[][] getKäigud() {
         return käigud;
     }
-
     public void suurendaTulemus() {
         tulemus += 1;
     }
-
-    public void algSeis() {
-        käigud = new int[Gomoku.MÕÕTMED][Gomoku.MÕÕTMED];
+    public void algSeis(boolean kasArvuti) {
+    	this.käigud = new int[Gomoku.MÕÕTMED][Gomoku.MÕÕTMED];
+        this.kasArvuti = kasArvuti;
     }
-
     public Color getVärv() {
         return värv;
     }
-
     //kui mängija teeb käigu, siis märgime tema käikude massiivis selle koha peale 1
-    public void teeKäik(Gomoku.Lahter lahter, ObservableList<Node> lapsed) {
+    /*public void teeKäik(Gomoku.Lahter lahter, ObservableList<Node> lapsed) {
         käigud[lahter.getYKoord()][lahter.getXKoord()] = 1;
-        //joonistame nupu
-        double laius = lahter.getWidth() / 2;
-        double kõrgus = lahter.getHeight() / 2;
-        Ellipse ellipse = new Ellipse(laius, kõrgus, laius - 3, kõrgus - 3);
-        ellipse.setFill(värv);
-        lapsed.add(ellipse);
-    }
+        
+        //ellipse.setFill(värv);
+        lapsed.add(iv);
+    }*/
 
     public String toString() {
         return nimetus;
@@ -60,8 +59,18 @@ public class Mängija {
     public String getTulemus() {
         return nimetus + ": " + tulemus;
     }
+    public Label getTulemusLabel() {
+    	Label tulemus = new Label(this.getTulemus());
+        return tulemus;
+    }
 
-    //peameetod, mis kontrollib kas mängija on võitnud
+    public boolean isKasArvuti() {
+		return kasArvuti;
+	}
+	public void setKasArvuti(boolean kasArvuti) {
+		this.kasArvuti = kasArvuti;
+	}
+	//peameetod, mis kontrollib kas mängija on võitnud
     public boolean kasMängijaVõitnud(int i, int j) {
         //kontrollitav käikude massiiv vastavalt aktiivsele mängijale
         int[] hetkeveerg = new int[Gomoku.MÕÕTMED];
@@ -289,12 +298,12 @@ public class Mängija {
         }
         return koordinaadid;
     }
-    public List<Koordinaadid> onHorisontaalselt_4(int[][] väljak) {
+    public List<Koordinaadid> onHorisontaalselt_4() {
         List<Koordinaadid> koordinaadid = new ArrayList<>();
         for (int i = 0; i < Gomoku.MÕÕTMED; i++) {
             for (int j = 0; j < Gomoku.MÕÕTMED; j++) {
                 if (i + 3 < Gomoku.MÕÕTMED && j < Gomoku.MÕÕTMED) {
-                    if (1 == väljak[i][j] && 1 == väljak[i + 1][j] && 1 == väljak[i + 2][j] && 1 == väljak[i + 3][j]) {
+                    if (1 == käigud[i][j] && 1 == käigud[i + 1][j] && 1 == käigud[i + 2][j] && 1 == käigud[i + 3][j]) {
                         if(i-1>0){
                             Koordinaadid uus = new Koordinaadid(i-1, j);
                             koordinaadid.add(uus);}
