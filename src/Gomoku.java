@@ -284,7 +284,7 @@ public class Gomoku extends Application {
                         }
                     }}
                     else {
-                        väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2))).teeKäik();
+                        väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2)));
                         pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
 
                     }
@@ -440,39 +440,43 @@ public class Gomoku extends Application {
         if (sinisekoordinaadid4.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid4);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,sinisekoordinaadid4);
         } else if (punasekoordinaadid4.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid4);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,punasekoordinaadid4);
         } else if (sinisekoordinaadid3.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid3);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,sinisekoordinaadid3);
+
 
         } else if (punasekoordinaadid3.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid3);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,punasekoordinaadid3);
+
         } else if (sinisekoordinaadid2.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid2);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,sinisekoordinaadid2);
+
 
         } else if (punasekoordinaadid2.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid2);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,punasekoordinaadid2);
+
         } else if (sinisekoordinaadid1.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid1);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,sinisekoordinaadid1);
+
         } else if (punasekoordinaadid1.size() != 0) {
-            System.out.println("jõudsin punasele");
             Koordinaadid parim4 = leiaparim(punasekoordinaadid1);
             pandavad = parim4;
-            eemaldaantudelemendid(parim4,punasekoordinaadid1);
-        }
+
+        }eemaldaantudelemendid(pandavad,sinisekoordinaadid4);
+        eemaldaantudelemendid(pandavad,punasekoordinaadid4);
+        eemaldaantudelemendid(pandavad,sinisekoordinaadid3);
+        eemaldaantudelemendid(pandavad,punasekoordinaadid3);
+        eemaldaantudelemendid(pandavad,punasekoordinaadid2);
+        eemaldaantudelemendid(pandavad,sinisekoordinaadid2);
+        eemaldaantudelemendid(pandavad,sinisekoordinaadid1);
+        eemaldaantudelemendid(pandavad,punasekoordinaadid1);
         return pandavad;
     }
 
@@ -499,9 +503,11 @@ public class Gomoku extends Application {
             try {
                 if (koordinaadid.get(i).equals(antud)) {
                     koordinaadid.remove(i);
+                    System.out.println("eemaldasin midagi");
                     eemaldaantudelemendid(antud, koordinaadid);
                 }
             } catch (ArrayIndexOutOfBoundsException Listindexoutofbounds){
+                System.out.println("erind toimib");
                 break;
             }
     }
