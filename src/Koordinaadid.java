@@ -3,7 +3,7 @@ import java.util.Objects;
 public class Koordinaadid {
 	private int x;
 	private int y;
-	public Koordinaadid(int x, int y) {
+	public Koordinaadid(int y, int x) {
 		this.x = x;
 		this.y = y;
 	}
