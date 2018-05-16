@@ -262,79 +262,38 @@ public class Gomoku extends Application {
                     //kui aktiivne mängija ei võitnud, siis vahetame aktiivse mängija ära.
                     vahetaAktiivneMängija();
                     teavitus.setText(aktiivneMängija + " käib");
-                }
-                //siin käib arvuti
-                if (aktiivneMängija.isKasArvuti()) {
-                    {
-
-                        // erinevatele võimalikele käiguvormidele loome omad võimalikud koordinaadid
-
-
-//vaatame järjest, kuidas oleks parim käik
-                    }
-                    Koordinaadid pandavad;
-                    if(punaneMängija.onnupp().size()!=0){
-                    while (true) {
-                        pandavad = arvutikäib();
-                        System.out.println(pandavad.toString());
-                        System.out.println(väljad.get(pandavad).getOmanik());
-                        if (väljad.get(pandavad).getOmanik() == null) {
-                            väljad.get(pandavad).setOmanik(sinineMängija);
-                            break;
-                        }
-                    }}
-                    else {
-                        väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2)));
-                        pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
-
-                    }
-
-
-                    //siin kontrollib kas mäng jätkub
-                    if (sinineMängija.kasMängijaVõitnud(pandavad.getX(), pandavad.getY())) {
-                        {
-                            Alert alert = new Alert(AlertType.INFORMATION);
-                            alert.setTitle("Mäng läbi");
-                            alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
-                            alert.showAndWait();
-                            aktiivneMängija.suurendaTulemus();
-                            algSeis(18,-1,punaneMängija);
-                        }}
-
-                        if (kasVäliTäis()) {
-                            Alert mängläbi = new Alert(AlertType.INFORMATION);
-                            mängläbi.setTitle("Mäng läbi");
-                            mängläbi.setContentText("Viik.\nJätkamiseks vajuta OK!");
-                            mängläbi.showAndWait();
-                            looUusMäng();
+                  //siin käib arvuti
+                    if (aktiivneMängija.isKasArvuti()) {
+                        Koordinaadid pandavad;
+                        if(punaneMängija.onnupp().size() !=0) {
+	                        while (true) {
+	                            pandavad = arvutikäib();
+	                            System.out.println(pandavad.toString());
+	                            System.out.println(väljad.get(pandavad).getOmanik());
+	                            if (väljad.get(pandavad).getOmanik() == null) {
+	                                väljad.get(pandavad).teeKäik();
+	                                break;
+	                            }
+	                        }
                         } else {
-                            System.out.println("vahetan mängija");
-                            //kui aktiivne mängija ei võitnud, siis vahetame aktiivse mängija ära.
-                            vahetaAktiivneMängija();
-                            teavitus.setText(aktiivneMängija + " käib");
+                            väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2)));
+                            pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
                         }
-                    } else {
-                        Alert alert = new Alert(AlertType.INFORMATION);
-                        alert.setTitle("Mäng läbi");
-                        alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
-                        alert.showAndWait();
-                        aktiivneMängija.suurendaTulemus();
-                        looUusMäng();
                     }
-                }
+                 }
+             }
+         }  
+    }
+
+    //meetod kontrollib kas Väli on täis. Kui leiab välja mis ei ole täidetud, siis false
+    private boolean kasVäliTäis() {
+        for (Lahter väli : väljad.values()) {
+            if (väli.getOmanik() == null) {
+                return false;
             }
         }
-
-        //meetod kontrollib kas Väli on täis. Kui leiab välja mis ei ole täidetud, siis false
-        private boolean kasVäliTäis() {
-            for (Lahter väli : väljad.values()) {
-                if (väli.getOmanik() == null) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
+        return true;
+    }
     public Koordinaadid arvutikäib() {
         Koordinaadid pandavad = null;
         List<Koordinaadid> punasekoordinaadid4 = punaneMängija.onVertikaalselt_4();
