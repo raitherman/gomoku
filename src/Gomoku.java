@@ -53,11 +53,13 @@ public class Gomoku extends Application {
     private double akenKõrgus = 675;
     private double akenLaius = 600;
     private FileWriter fw = null;
-    String failTee = "käigud.txt";
-    List<Koordinaadid> keelatud = new ArrayList<>();
+    private String failTee = "käigud.txt"; //siia salvestame programmi käimise jooksul tehtud käigud
+    private List<Koordinaadid> keelatudKoordinaadid = new ArrayList<>();
+
     public static void main(String[] args) {
         launch(args);
     }
+    //loome uue mänguvälja ja nullime mängijad
     public void algSeis(int mõõtmed, int mänguTüüp, Mängija aktiivneMängija) {
     	mänguväli.getChildren().clear();
     	Gomoku.mõõtmed = mõõtmed;
@@ -75,6 +77,7 @@ public class Gomoku extends Application {
         teavitus.setText(aktiivneMängija + " alustab");
         välineAken.setBottom(annaAlumineRiba());
     }
+    //loome enamuse mängu jooksul kasutatavast sisust/graafikast jne
     @Override
     public void start(Stage stage) throws Exception {
     	Files.deleteIfExists(Paths.get(failTee));
@@ -89,15 +92,17 @@ public class Gomoku extends Application {
         stage.setResizable(false);
         stage.show();
     }
+    //avakuva
     private void joonistaAlgVaade() {
+    	//alustamise nupp
 		ImageView nupp = annaPilt("src/resources/button_0.png");
-		nupp.setOnMouseClicked(e -> 
-			looUusMäng());
+		nupp.setOnMouseClicked(e -> looUusMäng());
 		nupp.setCursor(Cursor.HAND);
 		mänguväli.getChildren().addAll(
 				annaPilt("src/resources/gomoku_banner.png", 0.0, akenKõrgus, false),
 				new StackPane(nupp));
 	}
+  //siin loome kõik menüüd ja valikud, et saaks määrata mängu tüüpi jne.
 	private void teeUueMänguLoomiseVaade() {
 		Insets padding10 = new Insets(10);
 		Label lblUusMäng = new Label("Uus mäng:");
@@ -134,7 +139,7 @@ public class Gomoku extends Application {
     	RadioButton alustabSinine = new RadioButton("Sinine");
     	alustabSinine.setToggleGroup(tgAlustaja);
     	hbAlustaja.getChildren().addAll(new Label("Alustaja: "), alustabPunane, alustabSinine);
-    	
+
     	Button alustaMängu = new Button("Alusta mängu");
     	alustaMängu.setAlignment(Pos.CENTER);
     	alustaMängu.setOnAction(e -> 
@@ -146,6 +151,7 @@ public class Gomoku extends Application {
     	vbUusMäng.setMaxSize(akenLaius, akenKõrgus);
     	vbUusMäng.getChildren().addAll(lblUusMäng, hbVäljaSuurus, hbMänguTüüp, hbAlustaja, alustaMängu);
 	}
+	//alumisel real hoiame mängu seisu ning tagasivõtmise nuppu
 	private HBox annaAlumineRiba() {
     	//loome külgriba
 		HBox alariba = new HBox();
@@ -163,6 +169,7 @@ public class Gomoku extends Application {
         alariba.getChildren().addAll(undoNupp, tulemused);
         return alariba;
 	}
+	//meetod tühistab viimase käigu
     private void võtaKäikTagasi() {
     	Path path = Paths.get(failTee);
     	try {
@@ -188,9 +195,7 @@ public class Gomoku extends Application {
     	uusMäng.setOnAction(e -> looUusMäng());
     	välju.setOnAction(e -> System.exit(1));
     	menüüFail.getItems().addAll(uusMäng, välju);
-    	Menu menüüInfo = new Menu("Info");
-    	//siia paneme mingi õpetuse vms
-    	menüü.getMenus().addAll(menüüFail, menüüInfo);
+    	menüü.getMenus().addAll(menüüFail);
     	return menüü;
     }
 	private void looUusMäng() {
@@ -240,6 +245,7 @@ public class Gomoku extends Application {
             this.setPrefSize(150, 150);
             this.setOnMouseClicked(e -> teeKäik());
         }
+		//põhiline meetod mis tegeleb käigu lisamisega
         private void teeKäik() {
             if (omanik == null) {
             	logiKäik(this.koordinaadid.getY(), this.koordinaadid.getX());
@@ -263,30 +269,26 @@ public class Gomoku extends Application {
                     //kui aktiivne mängija ei võitnud, siis vahetame aktiivse mängija ära.
                     vahetaAktiivneMängija();
                     teavitus.setText(aktiivneMängija + " käib");
-                    // kui nüüd on aktiivne mängija arvuti, siis hakkame tema käiku ette valmistama
+                    // kui nüüd on aktiivne mängija arvuti, siis hakkame tema käiku ette valmistama ja proovime käia
                     if (aktiivneMängija.isKasArvuti()) {
                         Koordinaadid pandavad;
                         if(punaneMängija.onnupp().size() !=0) {
-	                        while (true) {
-	                            pandavad = arvutikäib();
+                        	while (true) {
+                        		pandavad = arvutikäib();
 	                            System.out.println(pandavad.toString());
 	                            System.out.println(väljad.get(pandavad).getOmanik());
 	                            if (väljad.get(pandavad).getOmanik() == null) {
 	                                väljad.get(pandavad).teeKäik();
 	                                break;
 	                            }
-	                            keelatud.add(pandavad);
+	                            keelatudKoordinaadid.add(pandavad);
 	                        }
-                        }/* else {
-                            väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2)));
-                            pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
-                        }*/
+                        }
                     }
-                 }
-             }
-         }  
+                }
+            }
+        }  
     }
-
     //meetod kontrollib kas Väli on täis. Kui leiab välja mis ei ole täidetud, siis false
     private boolean kasVäliTäis() {
         for (Lahter väli : väljad.values()) {
@@ -398,14 +400,14 @@ public class Gomoku extends Application {
             punasekoordinaadid2.add(koordinaat);
 
         }
-        punasekoordinaadid1.removeAll(keelatud);
-        punasekoordinaadid2.removeAll(keelatud);
-        punasekoordinaadid3.removeAll(keelatud);
-        punasekoordinaadid4.removeAll(keelatud);
-        sinisekoordinaadid1.removeAll(keelatud);
-        sinisekoordinaadid2.removeAll(keelatud);
-        sinisekoordinaadid3.removeAll(keelatud);
-        sinisekoordinaadid4.removeAll(keelatud);
+        punasekoordinaadid1.removeAll(keelatudKoordinaadid);
+        punasekoordinaadid2.removeAll(keelatudKoordinaadid);
+        punasekoordinaadid3.removeAll(keelatudKoordinaadid);
+        punasekoordinaadid4.removeAll(keelatudKoordinaadid);
+        sinisekoordinaadid1.removeAll(keelatudKoordinaadid);
+        sinisekoordinaadid2.removeAll(keelatudKoordinaadid);
+        sinisekoordinaadid3.removeAll(keelatudKoordinaadid);
+        sinisekoordinaadid4.removeAll(keelatudKoordinaadid);
         
         if (sinisekoordinaadid4.size() != 0) {
         	System.out.println("a");
@@ -477,7 +479,7 @@ public class Gomoku extends Application {
     private void eemaldaantudelemendid(Koordinaadid antud, List<Koordinaadid> koordinaadid){
         for (int i = 0; i < koordinaadid.size(); i++)
             try {
-                if (koordinaadid.get(i).equals(antud) || keelatud.contains(antud)) {
+                if (koordinaadid.get(i).equals(antud)) {
                     koordinaadid.remove(i);
                     System.out.println("eemaldasin midagi");
                     eemaldaantudelemendid(antud, koordinaadid);
