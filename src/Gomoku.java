@@ -5,6 +5,11 @@
  * */
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import javafx.application.Application;
@@ -24,30 +29,19 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Gomoku extends Application {
     //muutuja seadmaks mänguvälja suurust
     public static int mõõtmed = 18;
-    //private static final int INIMENE_VS_INIMENE = -1;
-    //private static final int ARVUTI_VS_INIMENE = 1;
-    //int mängutüüp;
-    Map<Koordinaadid, Lahter> lahtrid;
-    //-1 kui inimesed omavahel, 1 kui arvuti ka mängib.
     private Mängija punaneMängija = new Mängija(Color.RED, "Punane");
     private Mängija sinineMängija = new Mängija(Color.BLUE, "Sinine");
     private Mängija aktiivneMängija = punaneMängija;
@@ -56,13 +50,13 @@ public class Gomoku extends Application {
     private GridPane mänguväli = new GridPane();
     private VBox vbUusMäng = new VBox();
     private Map<Koordinaadid, Lahter> väljad = new HashMap<Koordinaadid, Lahter>();
-
+    private double akenKõrgus = 675;
+    private double akenLaius = 600;
+    private FileWriter fw = null;
+    String failTee = "käigud.txt";
     public static void main(String[] args) {
         launch(args);
     }
-
-    //mängu algseis. Loome uue mänguvälja ning eemaldame mängija käigud
-  //mängu algseis. Loome uue mänguvälja ning eemaldame mängija käigud
     public void algSeis(int mõõtmed, int mänguTüüp, Mängija aktiivneMängija) {
     	mänguväli.getChildren().clear();
     	Gomoku.mõõtmed = mõõtmed;
@@ -78,71 +72,58 @@ public class Gomoku extends Application {
         sinineMängija.algSeis(mänguTüüp == 1);
         this.aktiivneMängija = aktiivneMängija;
         teavitus.setText(aktiivneMängija + " alustab");
+        välineAken.setBottom(annaAlumineRiba());
     }
-
     @Override
     public void start(Stage stage) throws Exception {
+    	Files.deleteIfExists(Paths.get(failTee));
     	stage.setTitle("Gomoku");
-        Scene stseen = new Scene(välineAken, 600, 600);
-
-        MenuBar menüü = new MenuBar();
-    	Menu menüüFail = new Menu("Fail");
-    	MenuItem uusMäng = new MenuItem("Uus mäng");
-    	MenuItem välju = new MenuItem("Välju");
-    	uusMäng.setOnAction(e -> looUusMäng());
-    	välju.setOnAction(e -> System.exit(1));
-    	menüüFail.getItems().addAll(uusMäng, välju);
-    	Menu menüüInfo = new Menu("Info");
-    	//siia paneme mingi õpetuse vms
-    	menüü.getMenus().addAll(menüüFail, menüüInfo);
-
-    	//loome külgriba
-    	VBox külgriba = new VBox();
-    	külgriba.setAlignment(Pos.CENTER);
-    	külgriba.setBorder(new Border(new BorderStroke(Color.BLACK, 
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        külgriba.setMinWidth(100);
-        külgriba.getChildren().addAll(
-    			punaneMängija.getTulemusLabel(),
-    			sinineMängija.getTulemusLabel(),
-    			teavitus);
-    	
-    	välineAken.setTop(menüü);
-    	File fail = new File("src/resources/gomoku_banner.png");
-		ImageView piltVaade = new ImageView(new Image(fail.toURI().toString(), mänguväli.getHeight(), mänguväli.getWidth(), true, true));
-    	mänguväli.getChildren().add(piltVaade);
-		ImageView nupp = new ImageView(new Image(new File("src/resources/button_0.png").toURI().toString()));
-		StackPane pane = new StackPane();
-        pane.getChildren().add(nupp);
-        StackPane.setAlignment(nupp, Pos.CENTER);
-		nupp.setOnMouseClicked(e -> looUusMäng());
-		nupp.setCursor(Cursor.HAND);
-		mänguväli.getChildren().add(pane);
+        Scene stseen = new Scene(välineAken, akenLaius, akenKõrgus);
+    	joonistaAlgVaade();
+    	välineAken.setTop(annaMenüü());
     	välineAken.setCenter(mänguväli);
-    	välineAken.setRight(külgriba);
-
+    	teeUueMänguLoomiseVaade();
         stage.setScene(stseen);
-        
+        stage.getIcons().add(new Image("file:src/resources/icon.png"));
         stage.setResizable(false);
-        
+        stage.show();
+    }
+    private void joonistaAlgVaade() {
+		ImageView nupp = annaPilt("src/resources/button_0.png");
+		nupp.setOnMouseClicked(e -> 
+			looUusMäng());
+		nupp.setCursor(Cursor.HAND);
+		mänguväli.getChildren().addAll(
+				annaPilt("src/resources/gomoku_banner.png", 0.0, akenKõrgus, false),
+				new StackPane(nupp));
+	}
+	private void teeUueMänguLoomiseVaade() {
+		Insets padding10 = new Insets(10);
+		Label lblUusMäng = new Label("Uus mäng:");
+		lblUusMäng.setFont(new Font(20));
+		lblUusMäng.setPadding(padding10);
+		
         //Mänguvälja suuruse määramine
     	Spinner<Integer> suurus = new Spinner<>(8, 40, 18);
     	HBox hbVäljaSuurus = new HBox(new Label("Välja suurus: "), suurus);
     	hbVäljaSuurus.setAlignment(Pos.CENTER);
+    	hbVäljaSuurus.setPadding(padding10);
 
     	//Mängu tüübi valimine
     	HBox hbMänguTüüp = new HBox();
+    	hbMänguTüüp.setPadding(padding10);
     	hbMänguTüüp.setAlignment(Pos.CENTER);
     	ToggleGroup tgMänguTüüp = new ToggleGroup();
-    	RadioButton rb1 = new RadioButton("Inimene vs Arvuti");
-    	rb1.setToggleGroup(tgMänguTüüp);
-    	rb1.setSelected(true);
-    	RadioButton rb2 = new RadioButton("Inimene vs Inimene");
-    	rb2.setToggleGroup(tgMänguTüüp);
-    	hbMänguTüüp.getChildren().addAll(new Label("Mängu tüüp: "), rb1, rb2);
+    	RadioButton inimeneVsArvuti = new RadioButton("Inimene vs Arvuti");
+    	RadioButton inimeneVsInimene = new RadioButton("Inimene vs Inimene");
+    	inimeneVsInimene.setSelected(true);
+    	inimeneVsArvuti.setToggleGroup(tgMänguTüüp);
+    	inimeneVsInimene.setToggleGroup(tgMänguTüüp);
+    	hbMänguTüüp.getChildren().addAll(new Label("Mängu tüüp: "), inimeneVsArvuti, inimeneVsInimene);
     	
     	//Alustava värvi valimine
     	HBox hbAlustaja = new HBox();
+    	hbAlustaja.setPadding(padding10);
     	hbAlustaja.setAlignment(Pos.CENTER);
 
     	ToggleGroup tgAlustaja = new ToggleGroup();
@@ -155,15 +136,78 @@ public class Gomoku extends Application {
     	
     	Button alustaMängu = new Button("Alusta mängu");
     	alustaMängu.setAlignment(Pos.CENTER);
-    	alustaMängu.setOnAction(e -> algSeis(suurus.getValue(), rb1.isSelected() ? 1 : -1, alustabPunane.isSelected() ? punaneMängija : sinineMängija));
+    	alustaMängu.setOnAction(e -> 
+    		algSeis(suurus.getValue(), 
+    				inimeneVsArvuti.isSelected() ? 1 : -1, 
+    				alustabPunane.isSelected() ? punaneMängija : sinineMängija));
     	vbUusMäng.setAlignment(Pos.CENTER);
-    	vbUusMäng.setBackground(new Background(new BackgroundFill(Color.web("#FFF"), CornerRadii.EMPTY, Insets.EMPTY)));
-    	vbUusMäng.getChildren().addAll(hbVäljaSuurus, hbMänguTüüp, hbAlustaja, alustaMängu);
-        stage.show();
+    	vbUusMäng.setMinSize(akenLaius, akenKõrgus);
+    	vbUusMäng.setMaxSize(akenLaius, akenKõrgus);
+    	vbUusMäng.getChildren().addAll(lblUusMäng, hbVäljaSuurus, hbMänguTüüp, hbAlustaja, alustaMängu);
+	}
+	private HBox annaAlumineRiba() {
+    	//loome külgriba
+		HBox alariba = new HBox();
+    	VBox tulemused = new VBox();
+    	alariba.setAlignment(Pos.CENTER);
+    	tulemused.setAlignment(Pos.CENTER);
+    	tulemused.setMinHeight(75);
+        tulemused.getChildren().addAll(
+    			punaneMängija.getTulemusLabel(),
+    			sinineMängija.getTulemusLabel(),
+    			teavitus);
+        ImageView undoNupp = annaPilt("src/resources/undo.png", 30, 30, true);
+        undoNupp.setCursor(Cursor.HAND);
+        undoNupp.setOnMouseClicked(e ->	võtaKäikTagasi());
+        alariba.getChildren().addAll(undoNupp, tulemused);
+        return alariba;
+	}
+    private void võtaKäikTagasi() {
+    	Path path = Paths.get(failTee);
+    	try {
+	    	String failiSisu = new String(Files.readAllBytes(path));
+			String[] sisu = failiSisu.split(";");
+			String koordinaadidSisu = sisu[sisu.length - 1];
+			String[] koordinaadid = sisu[sisu.length - 1].split("/");
+	        if (koordinaadid.length != 0) {
+	        	väljad.get(new Koordinaadid(Integer.valueOf(koordinaadid[0]), Integer.valueOf(koordinaadid[1]))).tyhjenda();
+	        }
+	        failiSisu = failiSisu.replaceAll(koordinaadidSisu + ";", "");
+	        Files.write(path, failiSisu.getBytes());
+    	} catch (IOException e) {}
+	}
+	private void vahetaAktiivneMängija() {
+		aktiivneMängija = aktiivneMängija.equals(punaneMängija) ? sinineMängija : punaneMängija;
+	}
+	private MenuBar annaMenüü() {
+    	MenuBar menüü = new MenuBar();
+    	Menu menüüFail = new Menu("Fail");
+    	MenuItem uusMäng = new MenuItem("Uus mäng");
+    	MenuItem välju = new MenuItem("Välju");
+    	uusMäng.setOnAction(e -> looUusMäng());
+    	välju.setOnAction(e -> System.exit(1));
+    	menüüFail.getItems().addAll(uusMäng, välju);
+    	Menu menüüInfo = new Menu("Info");
+    	//siia paneme mingi õpetuse vms
+    	menüü.getMenus().addAll(menüüFail, menüüInfo);
+    	return menüü;
     }
-    private void looUusMäng() {
+	private void looUusMäng() {
     	mänguväli.getChildren().clear();
     	mänguväli.getChildren().add(vbUusMäng);
+	}
+	private ImageView annaPilt(String tee, double laius, double kõrgus, boolean säilitaKuvasuhe) {
+        return new ImageView(new Image(new File(tee).toURI().toString(), laius, kõrgus, säilitaKuvasuhe, true));
+	}
+	private ImageView annaPilt(String tee) {
+        return new ImageView(new Image(new File(tee).toURI().toString()));
+	}
+	private void logiKäik(int y, int x) {
+		try {
+			fw = new FileWriter(failTee, true);
+	  	    fw.write(y + "/" + x + ";");
+	  	    fw.close();
+		} catch (IOException e) {}
 	}
     public class Lahter extends Pane {
         private Mängija omanik;
@@ -182,22 +226,23 @@ public class Gomoku extends Application {
 
 		public void setOmanik(Mängija omanik) {
             this.omanik = omanik;
-            File file = new File("src/resources/" + (omanik.equals(punaneMängija) ? "punane.png" : "sinine.png"));
-            Image image = new Image(file.toURI().toString(), this.getWidth(), this.getWidth(), true, true);
-            ImageView iv = new ImageView(image);
-            this.getChildren().add(iv);
+            this.getChildren().add(annaPilt("src/resources/" + (omanik.equals(punaneMängija) ? "punane.png" : "sinine.png"), this.getWidth(), this.getHeight(), true));
         }
-
-        public Lahter(Koordinaadid koordinaadid) {
+		public void tyhjenda() {
+			this.omanik = null;
+			this.getChildren().clear();
+			vahetaAktiivneMängija();
+		}
+		public Lahter(Koordinaadid koordinaadid) {
             this.koordinaadid = koordinaadid;
             setStyle("-fx-border-color: black");
             this.setPrefSize(150, 150);
             this.setOnMouseClicked(e -> teeKäik());
         }
-
         //meetod mis loeb välja klikki
-        private void teeKäik(){
+        private void teeKäik()  {
             if (omanik == null) {
+            	logiKäik(this.koordinaadid.getY(), this.koordinaadid.getX());
                 setOmanik(aktiivneMängija);
                 omanik.getKäigud()[this.koordinaadid.getY()][this.koordinaadid.getX()] = 1;
                 //kontrollime kas aktiivne mängija on võitnud. Kui jah, siis vastav teade ja peale seda algseis.
@@ -216,7 +261,7 @@ public class Gomoku extends Application {
                     looUusMäng();
                 } else {
                     //kui aktiivne mängija ei võitnud, siis vahetame aktiivse mängija ära.
-                    aktiivneMängija = aktiivneMängija.equals(punaneMängija) ? sinineMängija : punaneMängija;
+                    vahetaAktiivneMängija();
                     teavitus.setText(aktiivneMängija + " käib");
                 }
                 //siin käib arvuti
@@ -249,7 +294,7 @@ public class Gomoku extends Application {
                         } else {
                             System.out.println("vahetan mängija");
                             //kui aktiivne mängija ei võitnud, siis vahetame aktiivse mängija ära.
-                            aktiivneMängija = aktiivneMängija.equals(punaneMängija) ? sinineMängija : punaneMängija;
+                            vahetaAktiivneMängija();
                             teavitus.setText(aktiivneMängija + " käib");
                         }
                     } else {

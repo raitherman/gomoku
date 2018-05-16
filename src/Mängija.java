@@ -6,6 +6,7 @@
 
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class Mängija {
     }
     public Label getTulemusLabel() {
     	Label tulemus = new Label(this.getTulemus());
+    	tulemus.setFont(new Font(20));
         return tulemus;
     }
 
