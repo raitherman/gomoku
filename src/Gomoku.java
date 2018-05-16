@@ -53,7 +53,7 @@ public class Gomoku extends Application {
     private double akenKõrgus = 675;
     private double akenLaius = 600;
     private FileWriter fw = null;
-    String failTee = "käigud.txt";
+    private String failTee = "käigud.txt";
     public static void main(String[] args) {
         launch(args);
     }
@@ -265,62 +265,23 @@ public class Gomoku extends Application {
                 }
                 //siin käib arvuti
                 if (aktiivneMängija.isKasArvuti()) {
-                    {
-
-                        // erinevatele võimalikele käiguvormidele loome omad võimalikud koordinaadid
-
-
-//vaatame järjest, kuidas oleks parim käik
-                    }
                     Koordinaadid pandavad;
                     if(punaneMängija.onnupp().size()!=0){
-                    while (true) {
-                        pandavad = arvutikäib();
-                        System.out.println(pandavad.toString());
-                        System.out.println(väljad.get(pandavad).getOmanik());
-                        if (väljad.get(pandavad).getOmanik() == null) {
-                            väljad.get(pandavad).setOmanik(sinineMängija);
-                            break;
-                        }
-                    }}
-                    else {
+                    	while (true) {
+	                        pandavad = arvutikäib();
+	                        System.out.println(pandavad.toString());
+	                        System.out.println(väljad.get(pandavad).getOmanik());
+	                        if (väljad.get(pandavad).getOmanik() == null) {
+	                            väljad.get(pandavad).setOmanik(sinineMängija);
+	                            break;
+	                        }
+                    	}
+                    } else {
                         väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2))).teeKäik();
                         pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
 
                     }
-
-
-                    //siin kontrollib kas mäng jätkub
-                    if (sinineMängija.kasMängijaVõitnud(pandavad.getX(), pandavad.getY())) {
-                        {
-                            Alert alert = new Alert(AlertType.INFORMATION);
-                            alert.setTitle("Mäng läbi");
-                            alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
-                            alert.showAndWait();
-                            aktiivneMängija.suurendaTulemus();
-                            algSeis(18,-1,punaneMängija);
-                        }}
-
-                        if (kasVäliTäis()) {
-                            Alert mängläbi = new Alert(AlertType.INFORMATION);
-                            mängläbi.setTitle("Mäng läbi");
-                            mängläbi.setContentText("Viik.\nJätkamiseks vajuta OK!");
-                            mängläbi.showAndWait();
-                            looUusMäng();
-                        } else {
-                            System.out.println("vahetan mängija");
-                            //kui aktiivne mängija ei võitnud, siis vahetame aktiivse mängija ära.
-                            vahetaAktiivneMängija();
-                            teavitus.setText(aktiivneMängija + " käib");
-                        }
-                    } else {
-                        Alert alert = new Alert(AlertType.INFORMATION);
-                        alert.setTitle("Mäng läbi");
-                        alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
-                        alert.showAndWait();
-                        aktiivneMängija.suurendaTulemus();
-                        looUusMäng();
-                    }
+                }
                 }
             }
         }
@@ -458,7 +419,6 @@ public class Gomoku extends Application {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid2);
             pandavad = parim4;
             eemaldaantudelemendid(parim4,sinisekoordinaadid2);
-
         } else if (punasekoordinaadid2.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid2);
             pandavad = parim4;
