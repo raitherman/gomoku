@@ -139,7 +139,7 @@ public class Mängija {
                 if (käigud[i][j] == 1) {
                     for (int k = -1; k < 2; k++) {
                         for (int l = -1; l < 2; l++) {
-                            if (i+k<Gomoku.mõõtmed && j+l<Gomoku.mõõtmed && i+k>Gomoku.mõõtmed && j+l>Gomoku.mõõtmed){
+                            if (i+k<Gomoku.mõõtmed && j+l<Gomoku.mõõtmed && i+k>0 && j+l>0){
                             koordinaadid.add(new Koordinaadid(i+k,j+l));}
 
                         }
@@ -199,7 +199,7 @@ public class Mängija {
                             Koordinaadid uus = new Koordinaadid(i-1, j-1);
                             koordinaadid.add(uus);}
                         if(i+4<Gomoku.mõõtmed && j+4<Gomoku.mõõtmed){
-                            Koordinaadid uus1 = new Koordinaadid(i+1, j+1);
+                            Koordinaadid uus1 = new Koordinaadid(i+4, j+4);
                             koordinaadid.add(uus1);}
                     }
                 }

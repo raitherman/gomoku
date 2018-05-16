@@ -239,8 +239,7 @@ public class Gomoku extends Application {
             this.setPrefSize(150, 150);
             this.setOnMouseClicked(e -> teeKäik());
         }
-        //meetod mis loeb välja klikki
-        private void teeKäik()  {
+        private void teeKäik() {
             if (omanik == null) {
             	logiKäik(this.koordinaadid.getY(), this.koordinaadid.getX());
                 setOmanik(aktiivneMängija);
@@ -274,17 +273,34 @@ public class Gomoku extends Application {
 //vaatame järjest, kuidas oleks parim käik
                     }
                     Koordinaadid pandavad;
+                    if(punaneMängija.onnupp().size()!=0){
                     while (true) {
                         pandavad = arvutikäib();
+                        System.out.println(pandavad.toString());
+                        System.out.println(väljad.get(pandavad).getOmanik());
                         if (väljad.get(pandavad).getOmanik() == null) {
                             väljad.get(pandavad).setOmanik(sinineMängija);
                             break;
                         }
+                    }}
+                    else {
+                        väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2))).teeKäik();
+                        pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
+
                     }
 
 
                     //siin kontrollib kas mäng jätkub
-                    if (!sinineMängija.kasMängijaVõitnud(pandavad.getX(), pandavad.getY())) {
+                    if (sinineMängija.kasMängijaVõitnud(pandavad.getX(), pandavad.getY())) {
+                        {
+                            Alert alert = new Alert(AlertType.INFORMATION);
+                            alert.setTitle("Mäng läbi");
+                            alert.setContentText(aktiivneMängija.toString() + " võitis.\nJätkamiseks vajuta OK!");
+                            alert.showAndWait();
+                            aktiivneMängija.suurendaTulemus();
+                            algSeis(18,-1,punaneMängija);
+                        }}
+
                         if (kasVäliTäis()) {
                             Alert mängläbi = new Alert(AlertType.INFORMATION);
                             mängläbi.setTitle("Mäng läbi");
@@ -318,10 +334,9 @@ public class Gomoku extends Application {
             }
             return true;
         }
-    }
 
     public Koordinaadid arvutikäib() {
-        Koordinaadid pandavad;
+        Koordinaadid pandavad = null;
         List<Koordinaadid> punasekoordinaadid4 = punaneMängija.onVertikaalselt_4();
         List<Koordinaadid> sinisekoordinaadid4 = sinineMängija.onVertikaalselt_4();
         List<Koordinaadid> punasekoordinaadid3 = punaneMängija.onVertikaalselt_3();
@@ -425,81 +440,38 @@ public class Gomoku extends Application {
         if (sinisekoordinaadid4.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid4);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : sinisekoordinaadid4
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    sinisekoordinaadid4.remove(parim4);
-                }
-            }
-
+            eemaldaantudelemendid(parim4,sinisekoordinaadid4);
         } else if (punasekoordinaadid4.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid4);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : punasekoordinaadid4
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    punasekoordinaadid4.remove(parim4);
-                }
-            }
+            eemaldaantudelemendid(parim4,punasekoordinaadid4);
         } else if (sinisekoordinaadid3.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid3);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : sinisekoordinaadid3
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    sinisekoordinaadid2.remove(parim4);
-                }
-            }
+            eemaldaantudelemendid(parim4,sinisekoordinaadid3);
 
         } else if (punasekoordinaadid3.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid3);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : punasekoordinaadid3
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    punasekoordinaadid3.remove(koordinaat);
-                }
-            }
+            eemaldaantudelemendid(parim4,punasekoordinaadid3);
         } else if (sinisekoordinaadid2.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid2);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : sinisekoordinaadid2
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    sinisekoordinaadid2.remove(parim4);
-                }
-            }
+            eemaldaantudelemendid(parim4,sinisekoordinaadid2);
 
         } else if (punasekoordinaadid2.size() != 0) {
             Koordinaadid parim4 = leiaparim(punasekoordinaadid2);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : punasekoordinaadid2
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    punasekoordinaadid2.remove(koordinaat);
-                }
-            }
+            eemaldaantudelemendid(parim4,punasekoordinaadid2);
         } else if (sinisekoordinaadid1.size() != 0) {
             Koordinaadid parim4 = leiaparim(sinisekoordinaadid1);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : sinisekoordinaadid1
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    sinisekoordinaadid1.remove(parim4);
-                }
-            }
+            eemaldaantudelemendid(parim4,sinisekoordinaadid1);
         } else if (punasekoordinaadid1.size() != 0) {
+            System.out.println("jõudsin punasele");
             Koordinaadid parim4 = leiaparim(punasekoordinaadid1);
             pandavad = parim4;
-            for (Koordinaadid koordinaat : punasekoordinaadid1
-                    ) {
-                if (koordinaat.equals(parim4)) {
-                    punasekoordinaadid1.remove(parim4);
-                }
-            }
-        } else {
-            väljad.get(new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2))).teeKäik();
-            pandavad = new Koordinaadid((int) Math.ceil(Gomoku.mõõtmed / 2), (int) Math.ceil(Gomoku.mõõtmed / 2));
+            eemaldaantudelemendid(parim4,punasekoordinaadid1);
         }
         return pandavad;
     }
@@ -521,5 +493,16 @@ public class Gomoku extends Application {
 
         }
         return antudlist.get(mitmeselement);
+    }
+    private void eemaldaantudelemendid(Koordinaadid antud, List<Koordinaadid> koordinaadid){
+        for (int i = 0; i < koordinaadid.size(); i++)
+            try {
+                if (koordinaadid.get(i).equals(antud)) {
+                    koordinaadid.remove(i);
+                    eemaldaantudelemendid(antud, koordinaadid);
+                }
+            } catch (ArrayIndexOutOfBoundsException Listindexoutofbounds){
+                break;
+            }
     }
 }
