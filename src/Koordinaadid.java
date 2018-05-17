@@ -3,16 +3,20 @@ import java.util.Objects;
 public class Koordinaadid {
 	private int x;
 	private int y;
+
 	public Koordinaadid(int y, int x) {
 		this.x = x;
 		this.y = y;
 	}
+
 	public int getX() {
 		return x;
 	}
+
 	public int getY() {
 		return y;
 	}
+
 	@Override
 	public boolean equals(Object k) {
 		if (k == this) {
@@ -24,15 +28,14 @@ public class Koordinaadid {
 		Koordinaadid koord = (Koordinaadid) k;
 		return this.x == koord.x && this.y == koord.y;
 	}
+
 	@Override
 	public int hashCode() {
 		return 31 + Objects.hash(this.x, this.y);
 	}
+
 	@Override
 	public String toString() {
-		return "Koordinaadid{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
-    }
+		return "Koordinaadid{" + "x=" + x + ", y=" + y + '}';
+	}
 }
