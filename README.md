@@ -1,12 +1,38 @@
 # Gomoku
 ![](src/resources/gomoku_banner_250.png)
-> Gomoku ehk "Viis nuppu ritta" on Jaapani lauamäng. 
+ 
+## Mis see on?
+
+Gomoku ehk "Viis nuppu ritta" on Jaapani lauamäng. 
 Klassikalise mängulaua suurus on 18x18, kuid võib mängida ka väiksemal mängulaual. 
 Tavaliselt kasutatakse Gomokus musti ja valgeid nuppe, kus alustaval 
 mustal on väike eelis, kuid niisama mängides pole see märgatav.
 Professionaalset varianti Gomokust nimetatakse rendžuks.
-## Ajalugu
-
-
 
 ## Teostus
+
+Mäng on kirjutatud Java keeles ning graafiline pool on teostatud kasutades Java FX teeki.
+
+## Kuidas mängida
+
+Kõige lihtsam viis mängimiseks on tõmmata pakitud fail [gomoku.jar](gomoku.jar) ning see käivitada. 
+Loomulikult saab mängida ka laadides alla kogu projekt ning käivitada see kas käsurealt või siis avada see mõnes IDE-s, 
+mis mõlemad eeldavad eelnevalt paigaldatud Java olemasolu.
+
+Mängu käivitades avaneb kõigepealt avavaade.
+
+<img src="src/resources/sc/avavaade.png" style="height:300px;width:300px;"/>
+
+Vajutades nupule "Alusta mängu" on võimalik seadistada endale sobiv mäng.
+Valida saab:
+* mänguvälja suurust max. 40x40
+* mängu tüüpi - kas inimene vs arvuti või inimene vs inimene
+* alustava mängija värvi 
+
+<img src="src/resources/sc/seadistamine.png" style="height:300px;width:300px;"/>
+
+Vajutades taaskord nupule "Alusta mängu" luuakse soovitud mängulaud ning mäng võib alata.
+
+<img src="src/resources/sc/mäng.png" style="height:300px;width:300px;"/>
+
+##
