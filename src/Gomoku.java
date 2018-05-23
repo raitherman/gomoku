@@ -5,7 +5,6 @@
  * Jaan Kaasik
  * */
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,10 +98,10 @@ public class Gomoku extends Application {
 	// avakuva
 	private void joonistaAlgVaade() {
 		// alustamise nupp
-		ImageView nupp = annaPilt("src/resources/button_0.png");
+		ImageView nupp = annaPilt("resources/button_0.png");
 		nupp.setOnMouseClicked(e -> looUusMäng());
 		nupp.setCursor(Cursor.HAND);
-		mänguväli.getChildren().addAll(annaPilt("src/resources/gomoku_banner.png", 0.0, akenKõrgus, false),
+		mänguväli.getChildren().addAll(annaPilt("resources/gomoku_banner.png", 0.0, akenKõrgus, false),
 				new StackPane(nupp));
 	}
 
@@ -163,7 +162,7 @@ public class Gomoku extends Application {
 		tulemused.setAlignment(Pos.CENTER);
 		tulemused.setMinHeight(75);
 		tulemused.getChildren().addAll(punaneMängija.getTulemusLabel(), sinineMängija.getTulemusLabel(), teavitus);
-		ImageView undoNupp = annaPilt("src/resources/undo.png", 30, 30, true);
+		ImageView undoNupp = annaPilt("resources/undo.png", 30, 30, true);
 		undoNupp.setCursor(Cursor.HAND);
 		undoNupp.setOnMouseClicked(e -> võtaKäikTagasi());
 		alariba.getChildren().addAll(undoNupp, tulemused);
@@ -215,11 +214,11 @@ public class Gomoku extends Application {
 	}
 
 	private ImageView annaPilt(String tee, double laius, double kõrgus, boolean säilitaKuvasuhe) {
-		return new ImageView(new Image(new File(tee).toURI().toString(), laius, kõrgus, säilitaKuvasuhe, true));
+		return new ImageView(new Image(getClass().getResourceAsStream(tee), laius, kõrgus, säilitaKuvasuhe, true));
 	}
 
 	private ImageView annaPilt(String tee) {
-		return new ImageView(new Image(new File(tee).toURI().toString()));
+		return new ImageView(new Image(getClass().getResourceAsStream(tee)));
 	}
 
 	private void logiKäik(int y, int x) {
@@ -257,7 +256,7 @@ public class Gomoku extends Application {
 		public void setOmanik(Mängija omanik) {
 			this.omanik = omanik;
 			this.getChildren()
-					.add(annaPilt("src/resources/" + (omanik.equals(punaneMängija) ? "punane.png" : "sinine.png"),
+					.add(annaPilt("resources/" + (omanik.equals(punaneMängija) ? "punane.png" : "sinine.png"),
 							this.getWidth(), this.getHeight(), true));
 		}
 
