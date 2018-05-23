@@ -86,12 +86,11 @@ public class Gomoku extends Application {
 	public void start(Stage stage) throws Exception {
 		Files.deleteIfExists(Paths.get(failTee));
 		stage.setTitle("Gomoku");
-		Scene stseen = new Scene(välineAken, akenLaius, akenKõrgus);
 		joonistaAlgVaade();
 		välineAken.setTop(annaMenüü());
 		välineAken.setCenter(mänguväli);
 		teeUueMänguLoomiseVaade();
-		stage.setScene(stseen);
+		stage.setScene(new Scene(välineAken, akenLaius, akenKõrgus));
 		stage.getIcons().add(new Image("file:src/resources/icon.png"));
 		stage.setResizable(false);
 		stage.show();
