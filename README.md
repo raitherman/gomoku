@@ -53,7 +53,7 @@ Kompleksed olukorrad, kus võidukäigud ei tundu isegi tavainimesele loogilised.
 Palju meetodite kopeerimisi, kuna arenemisfaasis tuleks if lausete struktuur selgemalt välja.
 Tulevikus kindlasti muutmiseks.
 
-##Mängu kontroll
+## Mängu kontroll
 Loeme käigud massiivi. Tehtud on meetodid, mis tuvastavad antud massiivis 5 järejstikust
 elementi vastavalt diagonaalis, horisontaalselt, vertikaalselt.
 Kerge on kontrollida käidud ruudu ümbert - vähem arvutamistööd arvutile.
