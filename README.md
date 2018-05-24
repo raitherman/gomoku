@@ -36,4 +36,24 @@ Vajutades taaskord nupule "Alusta mängu" luuakse soovitud mängulaud ning mäng
 
 <img src="src/resources/sc/mäng.png" style="height:300px;width:300px;"/>
 
-##
+## Mängu loogika
+Arvuti mängib vastu antud loogikaga if lausetes:
+1. Vaatab kas saab mängu võita - panna 5nda klotsi
+2. Vaatab kas saab vastast takistada otse võitmast - paneb talle ette 5nda
+3. Vaatab kas saab panna endale 4 järjest.
+4. Vaatab kas saab vastast takistada panemast 4. järjest.
+jne...
+kuni vaatab, kas punasel on üldse 1 nupp laual
+
+
+
+Arenemisfaasis, arvuti ei oska panni klotsi kahe vastase klotsi vahele, kui vaja.
+Kompleksed olukorrad, kus võidukäigud ei tundu isegi tavainimesele loogilised.
+
+Palju meetodite kopeerimisi, kuna arenemisfaasis tuleks if lausete struktuur selgemalt välja.
+Tulevikus kindlasti muutmiseks.
+
+##Mängu kontroll
+Loeme käigud massiivi. Tehtud on meetodid, mis tuvastavad antud massiivis 5 järejstikust
+elementi vastavalt diagonaalis, horisontaalselt, vertikaalselt.
+Kerge on kontrollida käidud ruudu ümbert - vähem arvutamistööd arvutile.
